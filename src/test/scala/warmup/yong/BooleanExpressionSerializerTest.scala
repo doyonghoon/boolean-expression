@@ -23,6 +23,15 @@ class BooleanExpressionSerializerTest extends FunSuite {
     assert(new BooleanExpressionSerializer().decode("!false & !false") === And(Not(False), Not(False)))
   }
 
+  test("Encodes BooleanExpressions") {
+    assert(new BooleanExpressionSerializer().encode(True) === "true")
+    assert(new BooleanExpressionSerializer().encode(False) === "false")
+    assert(new BooleanExpressionSerializer().encode(And(True, False)) === "true & false")
+    assert(new BooleanExpressionSerializer().encode(Or(True, Not(False))) === "true | !false")
+
+
+  }
+
   test("Handles extra whitespaces") {
     assert(new BooleanExpressionSerializer().decode(" false  ") === False)
     assert(new BooleanExpressionSerializer().decode(" trUe  ") === Variable(" trUe  "))
@@ -30,14 +39,10 @@ class BooleanExpressionSerializerTest extends FunSuite {
     assert(new BooleanExpressionSerializer().decode("!false|!true") === Or(Not(False), Not(True)))
   }
 
-  test("Decodes invalid formats so that every output should be Variable type") {
-    assert(new BooleanExpressionSerializer().encode(True) === "true")
-  }
-
-  test("Serializes json string into BooleanExpression") {
+  test("Deserializes json string into BooleanExpression") {
     val json = "[\"true\", \"false\", \"true|false\", !TRUE&true]"
     val expectedOutput = List(True, False, Or(True, False), Variable("!TRUE&true"))
-    val actualOutput = new BooleanExpressionSerializer().serialize(json)
+    val actualOutput = new BooleanExpressionSerializer().deserialize(json)
     assert(expectedOutput.size === actualOutput.size)
     for (i <- 0 until expectedOutput.size - 1) {
       assert(expectedOutput( i ) === actualOutput.get( i ))
@@ -45,10 +50,10 @@ class BooleanExpressionSerializerTest extends FunSuite {
 
   }
 
-  test("Deserializes BooleanExpressions into json string") {
+  test("Serializes BooleanExpressions into json string") {
     val json = "[\"true\",\"false\",\"true | false\",\"!false\"]"
     val sample = List(True, False, Or(True, False), Not(False))
-    val output = new BooleanExpressionSerializer().deserialize(sample)
+    val output = new BooleanExpressionSerializer().serialize(sample)
     assert(json === output)
   }
 
@@ -58,5 +63,6 @@ class BooleanExpressionSerializerTest extends FunSuite {
     assert(new BooleanExpressionSerializer().simplify(Or(Not(True), True)) === True)
     assert(new BooleanExpressionSerializer().simplify(Or(Not(And(True, False)), False)) === True)
     assert(new BooleanExpressionSerializer().simplify(Or(Not(And(True, False)), Or(And(False, Not(False)), Not(False)))) === True)
+    assert(new BooleanExpressionSerializer().simplify(Variable("!hello")) === Variable("!hello"))
   }
 }

@@ -26,6 +26,9 @@ class BooleanExpressionSerializer {
 
       case r: Or =>
         if (simplify(r.e1) == True || simplify(r.e2) == True) return True else return False
+
+      case _: Variable =>
+        return e
     }
 
     return e
@@ -46,12 +49,12 @@ class BooleanExpressionSerializer {
   }
 
   /**
-    * Serializes a json array string into a list of BooleanExpression.
+    * Deserializes a json array string into a list of BooleanExpression.
     *
     * @param jsonArrayStr A json array string.
     * @return a list of parsed BooleanExpression
     **/
-  def serialize(jsonArrayStr: String): util.ArrayList[BooleanExpression] = {
+  def deserialize(jsonArrayStr: String): util.ArrayList[BooleanExpression] = {
     val list = new util.ArrayList[BooleanExpression]
     if (!isValidJson(jsonArrayStr)) {
       throw new JsonSyntaxException("Invalid json is given")
@@ -82,7 +85,7 @@ class BooleanExpressionSerializer {
     * @param list A list of BooleanExpressions
     * @return json array string
     **/
-  def deserialize(list: List[BooleanExpression]): String = {
+  def serialize(list: List[BooleanExpression]): String = {
     val arr = new util.ArrayList[String]
     for (i <- list.indices) {
       arr.add(encode(list(i)))
