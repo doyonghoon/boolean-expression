@@ -6,6 +6,12 @@ import com.google.gson.{Gson, JsonArray, JsonParser, JsonSyntaxException}
 
 class BooleanExpressionSerializer {
 
+  /**
+    * Simplifes given BooleanExpression so that it will output a single expression at the end.
+    *
+    * @param e An expression to simplify
+    * @return A resulting expression
+    **/
   def simplify(e: BooleanExpression): BooleanExpression = {
     if (e == True || e == False) {
       return e
@@ -25,6 +31,9 @@ class BooleanExpressionSerializer {
     return e
   }
 
+  /**
+    * A helper function to determine if the given json format is a valid.
+    **/
   def isValidJson(json: String): Boolean = {
     try {
       new JsonParser().parse(json)
@@ -36,6 +45,12 @@ class BooleanExpressionSerializer {
     false
   }
 
+  /**
+    * Serializes a json array string into a list of BooleanExpression.
+    *
+    * @param jsonArrayStr A json array string.
+    * @return a list of parsed BooleanExpression
+    **/
   def serialize(jsonArrayStr: String): util.ArrayList[BooleanExpression] = {
     val list = new util.ArrayList[BooleanExpression]
     if (!isValidJson(jsonArrayStr)) {
@@ -61,6 +76,12 @@ class BooleanExpressionSerializer {
     list
   }
 
+  /**
+    * Transforms a list of BooleanExpressions into a json array string.
+    *
+    * @param list A list of BooleanExpressions
+    * @return json array string
+    **/
   def deserialize(list: List[BooleanExpression]): String = {
     val arr = new util.ArrayList[String]
     for (i <- list.indices) {
@@ -95,8 +116,18 @@ class BooleanExpressionSerializer {
     return ""
   }
 
-  def decode(json: String): BooleanExpression = {
-    var s = json.replaceAll("^\\s+", "").trim()
+  /**
+    * Parses the raw string and returns a single BooleanExpression if it is in a valid format. A string value having
+    * whitespaces in edges is still considered as a valid format. For example, "  true " -> "true" so that this is a
+    * valid BooleanExpression. However, "t r u e" is in an invalid format of Boolean so that the resulting BooleanExpression
+    * is Variable("t r u e").
+    *
+    * @param rawstr A candidate BooleanExpression
+    * @return A BooleanExpression
+    **/
+  def decode(rawstr: String): BooleanExpression = {
+    // let us consider a string containing extra whitespaces in edges still being in a valid format.
+    var s = rawstr.replaceAll("^\\s+", "").trim()
     s match {
       case "true" => return True
       case "false" => return False
@@ -106,18 +137,18 @@ class BooleanExpressionSerializer {
           val e1 = decode(split(0))
           val e2 = decode(split(1))
           if (e1.isInstanceOf[Variable] || e2.isInstanceOf[Variable]) {
-            return Variable(json)
+            return Variable(rawstr)
           }
 
           return And(e1, e2)
         }
 
-        if (json.contains('|')) {
-          val split = json.split('|')
+        if (rawstr.contains('|')) {
+          val split = rawstr.split('|')
           val e1 = decode(split(0))
           val e2 = decode(split(1))
           if (e1.isInstanceOf[Variable] || e2.isInstanceOf[Variable]) {
-            return Variable(json)
+            return Variable(rawstr)
           }
 
           return Or(e1, e2)
@@ -131,9 +162,9 @@ class BooleanExpressionSerializer {
         return Not(b)
       }
 
-      return Variable(json)
+      return Variable(rawstr)
     }
 
-    Variable(json)
+    Variable(rawstr)
   }
 }
