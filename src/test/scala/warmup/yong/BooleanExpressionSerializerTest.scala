@@ -51,4 +51,12 @@ class BooleanExpressionSerializerTest extends FunSuite {
     val output = new BooleanExpressionSerializer().deserialize(sample)
     assert(json === output)
   }
+
+  test("Simplifies BooleanExpressions") {
+    assert(new BooleanExpressionSerializer().simplify(Or(Not(True), False)) === False)
+    assert(new BooleanExpressionSerializer().simplify(And(True, False)) === False)
+    assert(new BooleanExpressionSerializer().simplify(Or(Not(True), True)) === True)
+    assert(new BooleanExpressionSerializer().simplify(Or(Not(And(True, False)), False)) === True)
+    assert(new BooleanExpressionSerializer().simplify(Or(Not(And(True, False)), Or(And(False, Not(False)), Not(False)))) === True)
+  }
 }

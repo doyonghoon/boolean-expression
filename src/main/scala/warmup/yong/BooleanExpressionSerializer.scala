@@ -6,6 +6,25 @@ import com.google.gson.{Gson, JsonArray, JsonParser, JsonSyntaxException}
 
 class BooleanExpressionSerializer {
 
+  def simplify(e: BooleanExpression): BooleanExpression = {
+    if (e == True || e == False) {
+      return e
+    }
+
+    e match {
+      case r: Not =>
+        if (simplify(r.e) == True) return False else return True
+
+      case r: And =>
+        if (simplify(r.e1) == simplify(r.e2)) return True else return False
+
+      case r: Or =>
+        if (simplify(r.e1) == True || simplify(r.e2) == True) return True else return False
+    }
+
+    return e
+  }
+
   def isValidJson(json: String): Boolean = {
     try {
       new JsonParser().parse(json)
