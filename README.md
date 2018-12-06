@@ -18,7 +18,7 @@ If the json is an array of expressions, then you would want to call `serialize(j
 
 ```scala
 val json = "[\"true\",\"false\",\"true | false\",\"!false\"]"
-new BooleanExpressionSerializer().deserialize(sample) === [True, False, Or(True, False), Not(False)]
+new BooleanExpressionSerializer().deserialize(json) === [True, False, Or(True, False), Not(False)]
 ```
 
 2. How to encode (serialization: BooleanExpression -> json)
@@ -32,9 +32,8 @@ new BooleanExpressionSerializer().encode(And(True, False)) === "true & false"
 Or, you could also transform a list of `BooleanExpression`s into a json array string by calling as the following:
 
 ```scala
-val json = "[\"true\",\"false\",\"true | false\",\"!false\"]"
 val sample = List(True, False, Or(True, False), Not(False))
-new BooleanExpressionSerializer().serialize(sample) === json
+new BooleanExpressionSerializer().serialize(sample) === "[\"true\",\"false\",\"true | false\",\"!false\"]"
 ```
 
 ### Bonus Assignment
