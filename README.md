@@ -1,12 +1,12 @@
 # Boolean Expressions
 
-> encodes boolean expressions and also simplifies a given boolean expression algebraically.
+> encodes/decodes boolean expressions and also simplifies a given boolean expression algebraically.
 
-This program takes a json string and returns a list of `BooleanExpression`s. For a bonus assignment, it provides a function to simplify a `BooleanExpression` so that it would ultimately output a `True` or `False` depending on the boolean expression given.
+This program takes a json string and returns a list of `BooleanExpression`s. For a bonus assignment, it provides a function to simplify a `BooleanExpression` so that it would ultimately output a `True`, `False`, or `Variable` depending on the boolean expression given.
 
 ### Usage Example
 
-1. How to decode (deserialization)
+1. How to decode (deserialization: json -> BooleanExpression)
 
 If the json is simply a primitive type itself, then you can decode the expression by following:
 
@@ -21,7 +21,7 @@ val json = "[\"true\",\"false\",\"true | false\",\"!false\"]"
 new BooleanExpressionSerializer().deserialize(sample) === [True, False, Or(True, False), Not(False)]
 ```
 
-2. How to encode (serialization)
+2. How to encode (serialization: BooleanExpression -> json)
 
 To transform `BooleanExpression` to json `String`, you can call `encode(e: BooleanExpression)` as following:
 
@@ -33,7 +33,8 @@ Or, you could also transform a list of `BooleanExpression`s into a json array st
 
 ```scala
 val json = "[\"true\",\"false\",\"true | false\",\"!false\"]"
-new BooleanExpressionSerializer().serialize(sample) === [True, False, Or(True, False), Not(False)]
+val sample = List(True, False, Or(True, False), Not(False))
+new BooleanExpressionSerializer().serialize(sample) === json
 ```
 
 ### Bonus Assignment

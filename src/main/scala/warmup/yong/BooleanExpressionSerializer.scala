@@ -35,7 +35,7 @@ class BooleanExpressionSerializer {
   }
 
   /**
-    * A helper function to determine if the given json format is a valid.
+    * A helper function to determine if the given json format is valid.
     **/
   def isValidJson(json: String): Boolean = {
     try {
@@ -116,11 +116,11 @@ class BooleanExpressionSerializer {
         return encode(r.e1) + " & " + encode(r.e2)
     }
 
-    return ""
+    ""
   }
 
   /**
-    * Parses the raw string and returns a single BooleanExpression if it is in a valid format. A string value having
+    * Parses the a JSON primitive string and returns a single BooleanExpression if it is in a valid format. A string value having
     * whitespaces in edges is still considered as a valid format. For example, "  true " -> "true" so that this is a
     * valid BooleanExpression. However, "t r u e" is in an invalid format of Boolean so that the resulting BooleanExpression
     * is Variable("t r u e").
@@ -130,7 +130,7 @@ class BooleanExpressionSerializer {
     **/
   def decode(rawstr: String): BooleanExpression = {
     // let us consider a string containing extra whitespaces in edges still being in a valid format.
-    var s = rawstr.replaceAll("^\\s+", "").trim()
+    val s = rawstr.replaceAll("^\\s+", "").trim()
     s match {
       case "true" => return True
       case "false" => return False
