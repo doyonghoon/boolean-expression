@@ -22,9 +22,21 @@ class BooleanExpressionSerializer {
         if (simplify(r.e) == True) return False else return True
 
       case r: And =>
+        val left = simplify(r.e1)
+        val right = simplify(r.e2)
+        if (left.isInstanceOf[Variable] || right.isInstanceOf[Variable]) {
+          return e
+        }
+
         if (simplify(r.e1) == simplify(r.e2)) return True else return False
 
       case r: Or =>
+        val left = simplify(r.e1)
+        val right = simplify(r.e2)
+        if (left.isInstanceOf[Variable] || right.isInstanceOf[Variable]) {
+          return e
+        }
+
         if (simplify(r.e1) == True || simplify(r.e2) == True) return True else return False
 
       case _: Variable =>

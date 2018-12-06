@@ -28,8 +28,6 @@ class BooleanExpressionSerializerTest extends FunSuite {
     assert(new BooleanExpressionSerializer().encode(False) === "false")
     assert(new BooleanExpressionSerializer().encode(And(True, False)) === "true & false")
     assert(new BooleanExpressionSerializer().encode(Or(True, Not(False))) === "true | !false")
-
-
   }
 
   test("Handles extra whitespaces") {
@@ -64,5 +62,6 @@ class BooleanExpressionSerializerTest extends FunSuite {
     assert(new BooleanExpressionSerializer().simplify(Or(Not(And(True, False)), False)) === True)
     assert(new BooleanExpressionSerializer().simplify(Or(Not(And(True, False)), Or(And(False, Not(False)), Not(False)))) === True)
     assert(new BooleanExpressionSerializer().simplify(Variable("!hello")) === Variable("!hello"))
+    assert(new BooleanExpressionSerializer().simplify(Or(Variable("a text"), False)) === Or(Variable("a text"), False))
   }
 }
