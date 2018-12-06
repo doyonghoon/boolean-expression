@@ -48,7 +48,7 @@ def simplify(e: BooleanExpression)
 
 For example, the following will simply output `False`.
 ```scala
-new BooleanExpressionSerializer().simplify(And(True, False) === False
+new BooleanExpressionSerializer().simplify(And(True, False)) === False
 ```
 
 # Author
